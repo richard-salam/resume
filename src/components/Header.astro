@@ -1,0 +1,117 @@
+---
+import ThemeToggle from './ThemeToggle.astro';
+import resume from '../data/resume.json';
+
+const { basics } = resume;
+const path = Astro.url.pathname;
+
+/** Anchor nav on the home page, plus the Writing index. */
+const nav = [
+  { href: '/#experience', label: 'Experience' },
+  { href: '/#ai-stack', label: 'AI stack' },
+  { href: '/#writing', label: 'Writing' },
+  { href: '/#contact', label: 'Contact' },
+];
+
+function isActive(href: string) {
+  if (href === '/writing/') return path.startsWith('/writing');
+  return false;
+}
+---
+
+<header class="site-header no-print">
+  <div class="wrap bar">
+    <a class="brand" href="/">
+      <span class="brand-name">{basics.name}</span>
+    </a>
+
+    <nav aria-label="Primary">
+      <ul>
+        {
+          nav.map((item) => (
+            <li>
+              <a
+                href={item.href}
+                aria-current={isActive(item.href) ? 'page' : undefined}
+              >
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+        <li>
+          <a href="/writing/" aria-current={isActive('/writing/') ? 'page' : undefined}>
+            Blog
+          </a>
+        </li>
+        <li>
+          <ThemeToggle />
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: color-mix(in srgb, var(--paper) 88%, transparent);
+    backdrop-filter: blur(10px);
+    border-bottom: var(--border) var(--line);
+  }
+
+  .bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-s);
+    min-height: 3.25rem;
+    flex-wrap: wrap;
+  }
+
+  .brand {
+    font-weight: 600;
+    font-size: 0.95rem;
+    letter-spacing: -0.01em;
+    text-decoration: none;
+    color: var(--ink);
+    padding-block: var(--space-2xs);
+  }
+
+  .brand:hover {
+    color: var(--accent);
+  }
+
+  nav ul {
+    display: flex;
+    align-items: center;
+    gap: clamp(0.5rem, 1.5vw, 1.15rem);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  nav a:not(.brand) {
+    font-size: 0.85rem;
+    color: var(--ink-muted);
+    text-decoration: none;
+    padding-block: var(--space-2xs);
+  }
+
+  nav a:not(.brand):hover {
+    color: var(--ink);
+  }
+
+  nav a[aria-current='page'] {
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  @media (max-width: 30rem) {
+    .bar {
+      justify-content: center;
+    }
+  }
+</style>

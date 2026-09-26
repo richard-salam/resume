@@ -1,0 +1,115 @@
+---
+/**
+ * Three-state control: follows the OS until clicked, then sticks to the
+ * explicit choice. Renders as a single cycling button rather than a
+ * three-way switch — fewer moving parts, and the label states the current
+ * mode in words rather than relying on icon comprehension.
+ */
+---
+
+<button
+  type="button"
+  class="theme-toggle no-print"
+  data-theme-toggle
+  aria-label="Switch colour theme"
+  title="Switch colour theme"
+>
+  <span aria-hidden="true" data-theme-icon>◐</span>
+  <span class="sr-only" data-theme-label>Theme</span>
+</button>
+
+<style>
+  .theme-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    padding: 0;
+    border: var(--border) var(--line);
+    border-radius: var(--radius);
+    background: transparent;
+    color: var(--ink-muted);
+    font: inherit;
+    font-size: 1rem;
+    line-height: 1;
+    cursor: pointer;
+    transition: color var(--transition), border-color var(--transition);
+  }
+
+  .theme-toggle:hover {
+    color: var(--ink);
+    border-color: var(--line-strong);
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+</style>
+
+<script>
+  type Theme = 'light' | 'dark';
+
+  const LABELS: Record<Theme, string> = {
+    light: 'Light',
+    dark: 'Dark',
+  };
+
+  const ICONS: Record<Theme, string> = {
+    light: '☀',
+    dark: '☾',
+  };
+
+  const root = document.documentElement;
+  const buttons = document.querySelectorAll<HTMLButtonElement>('[data-theme-toggle]');
+
+  /** Resolved mode: the stored choice, else whatever the OS is asking for. */
+  function current(): Theme {
+    const stored = root.dataset.theme;
+    if (stored === 'light' || stored === 'dark') return stored;
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+
+  function paint() {
+    const mode = current();
+    buttons.forEach((button) => {
+      const label = button.querySelector('[data-theme-label]');
+      const icon = button.querySelector('[data-theme-icon]');
+      if (label) label.textContent = LABELS[mode];
+      if (icon) icon.textContent = ICONS[mode];
+      button.setAttribute(
+        'aria-label',
+        `Switch to ${mode === 'dark' ? 'light' : 'dark'} theme (currently ${LABELS[mode]})`,
+      );
+    });
+  }
+
+  buttons.forEach((button) => {
+    button.addEventListener('click', () => {
+      const next: Theme = current() === 'dark' ? 'light' : 'dark';
+      root.dataset.theme = next;
+      try {
+        localStorage.setItem('theme', next);
+      } catch {
+        /* private mode — the choice just won't persist */
+      }
+      paint();
+    });
+  });
+
+  // If the user has never chosen, keep tracking OS changes live.
+  window
+    .matchMedia('(prefers-color-scheme: dark)')
+    .addEventListener('change', () => {
+      if (!root.dataset.theme) paint();
+    });
+
+  paint();
+</script>

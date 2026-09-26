@@ -1,0 +1,86 @@
+---
+import resume from '../data/resume.json';
+
+const { basics } = resume;
+const year = new Date().getFullYear();
+
+const socials = [
+  basics.linkedin && { label: 'LinkedIn', href: basics.linkedin },
+  basics.github && { label: 'GitHub', href: basics.github },
+  basics.x && { label: 'X', href: basics.x },
+  basics.bluesky && { label: 'Bluesky', href: basics.bluesky },
+].filter((s): s is { label: string; href: string } => Boolean(s));
+---
+
+<footer class="site-footer no-print">
+  <div class="wrap inner">
+    <p class="muted">
+      {basics.name} — {basics.title}
+      {basics.location && <span class="sep">·</span>}
+      {basics.location}
+    </p>
+
+    {
+      socials.length > 0 && (
+        <ul class="socials">
+          {socials.map((s) => (
+            <li>
+              <a href={s.href} rel="me noopener">
+                {s.label}
+              </a>
+            </li>
+          ))}
+          <li>
+            <a href="/rss.xml">RSS</a>
+          </li>
+        </ul>
+      )
+    }
+
+    <p class="colophon muted">
+      Built with <a href="https://astro.build">Astro</a>. Content lives in
+      <code>src/data/resume.json</code> and <code>src/content/blog/</code>.
+      <span class="sep">·</span>
+      © {year}
+    </p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    margin-block-start: var(--space-2xl);
+    border-top: var(--border) var(--line);
+    padding-block: var(--space-l);
+    font-size: var(--step--1);
+  }
+
+  .inner {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2xs);
+  }
+
+  .socials {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-s);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .sep {
+    margin-inline: var(--space-3xs);
+    color: var(--ink-faint);
+  }
+
+  .colophon {
+    font-size: 0.78rem;
+    color: var(--ink-faint);
+  }
+
+  .colophon code {
+    font-family: var(--font-mono);
+    font-size: 0.95em;
+  }
+</style>

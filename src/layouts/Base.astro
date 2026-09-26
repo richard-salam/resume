@@ -1,0 +1,70 @@
+---
+import '../styles/global.css';
+import resume from '../data/resume.json';
+
+interface Props {
+  title?: string;
+  description?: string;
+  /** Adds a `data-page` attribute, handy for targeted print rules. */
+  page?: string;
+}
+
+const {
+  title,
+  description = resume.basics.tagline,
+  page,
+} = Astro.props;
+
+const siteTitle = title
+  ? `${title} — ${resume.basics.name}`
+  : `${resume.basics.name} — ${resume.basics.title}`;
+
+const canonical = new URL(Astro.url.pathname, Astro.site);
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{siteTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="alternate" type="application/rss+xml" title={`${resume.basics.name} — Writing`} href="/rss.xml" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={siteTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:site_name" content={resume.basics.name} />
+    <meta name="twitter:card" content="summary" />
+
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#fdfdfc" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#131312" media="(prefers-color-scheme: dark)" />
+
+    <script is:inline>
+      // Runs before first paint so the page never flashes the wrong theme.
+      // Sets data-theme only once the user makes an explicit choice; until
+      // then the CSS prefers-color-scheme block handles it.
+      (() => {
+        try {
+          const stored = localStorage.getItem('theme');
+          if (stored === 'light' || stored === 'dark') {
+            document.documentElement.dataset.theme = stored;
+          }
+        } catch {}
+      })();
+    </script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <slot name="header" />
+    <main id="main" data-page={page}>
+      <slot />
+    </main>
+    <slot name="footer" />
+  </body>
+</html>

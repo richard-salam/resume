@@ -1,0 +1,129 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import PostCard from '../../components/PostCard.astro';
+import resume from '../../data/resume.json';
+
+const posts = (await getCollection('blog', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+/** Every tag in use, with counts, ordered by frequency. */
+const tagCounts = new Map<string, number>();
+for (const post of posts) {
+  for (const tag of post.data.tags) {
+    tagCounts.set(tag, (tagCounts.get(tag) ?? 0) + 1);
+  }
+}
+const tags = [...tagCounts.entries()].sort(
+  (a, b) => b[1] - a[1] || a[0].localeCompare(b[0]),
+);
+
+const [lead, ...rest] = posts;
+---
+
+<Base
+  page="writing"
+  title="Writing"
+  description={`Essays and field notes from ${resume.basics.name}, ${resume.basics.title}.`}
+>
+  <Header slot="header" />
+  <Footer slot="footer" />
+
+  <section class="head">
+    <div class="wrap">
+      <h1>Writing</h1>
+      <p class="lede">
+        Field notes on documentation, docs-as-code, and using AI in a content
+        workflow. No thought leadership, no SEO filler — just what worked, what
+        didn't, and why.
+      </p>
+
+      {
+        tags.length > 0 && (
+          <ul class="tag-row filters" aria-label="Tags">
+            {tags.map(([tag, count]) => (
+              <li class="tag">
+                {tag} <span class="count">{count}</span>
+              </li>
+            ))}
+          </ul>
+        )
+      }
+    </div>
+  </section>
+
+  <section class="list">
+    <div class="wrap">
+      {
+        lead && (
+          <div class="lead">
+            <p class="eyebrow">Latest</p>
+            <PostCard post={lead} featured />
+          </div>
+        )
+      }
+
+      {
+        rest.length > 0 ? (
+          <ul class="grid">
+            {rest.map((post) => (
+              <li>
+                <PostCard post={post} />
+              </li>
+            ))}
+          </ul>
+        ) : (
+          !lead && <p class="muted">Nothing published yet.</p>
+        )
+      }
+    </div>
+  </section>
+</Base>
+
+<style>
+  .head {
+    padding-block: var(--space-2xl) var(--space-l);
+  }
+
+  h1 {
+    font-size: var(--step-4);
+    line-height: 1.05;
+  }
+
+  .lede {
+    margin-block-start: var(--space-m);
+  }
+
+  .filters {
+    margin-block-start: var(--space-l);
+  }
+
+  .count {
+    color: var(--ink-faint);
+  }
+
+  .list {
+    padding-block-end: var(--space-xl);
+  }
+
+  .lead {
+    padding-block-end: var(--space-l);
+    margin-block-end: var(--space-l);
+    border-bottom: var(--border) var(--line);
+  }
+
+  .lead .eyebrow {
+    margin-block-end: var(--space-2xs);
+  }
+
+  .grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
+    gap: var(--space-m) var(--space-l);
+  }
+</style>

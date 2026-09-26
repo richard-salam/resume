@@ -1,0 +1,51 @@
+---
+import resume from '../data/resume.json';
+
+const groups = resume.skills;
+---
+
+<div class="grid">
+  {
+    groups.map((group) => (
+      <div class="group">
+        <h3>{group.category}</h3>
+        <ul>
+          {group.items.map((item) => (
+            <li>{item}</li>
+          ))}
+        </ul>
+      </div>
+    ))
+  }
+</div>
+
+<style>
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+    gap: var(--space-m) var(--space-l);
+  }
+
+  h3 {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    padding-block-end: var(--space-2xs);
+    border-bottom: var(--border) var(--line);
+    margin-block-end: var(--space-2xs);
+  }
+
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    font-size: var(--step--1);
+    line-height: 1.5;
+  }
+</style>

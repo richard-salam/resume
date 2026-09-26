@@ -1,0 +1,40 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Base page="404" title="Page not found" description="That page does not exist.">
+  <Header slot="header" />
+  <Footer slot="footer" />
+
+  <section class="wrap inner">
+    <p class="eyebrow">404</p>
+    <h1>Page not found</h1>
+    <p class="lede">
+      That URL doesn't exist. It may have moved, or the link may be wrong.
+    </p>
+    <p>
+      <a class="btn" href="/">Back to the resume</a>
+      <a class="btn" href="/writing/">Read the blog</a>
+    </p>
+  </section>
+</Base>
+
+<style>
+  .inner {
+    padding-block: var(--space-2xl);
+  }
+
+  h1 {
+    font-size: var(--step-4);
+    margin-block: var(--space-2xs) var(--space-m);
+  }
+
+  .inner p:last-child {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2xs);
+    margin-block-start: var(--space-l);
+  }
+</style>

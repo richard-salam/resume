@@ -1,0 +1,216 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Section from '../components/Section.astro';
+import AIStack from '../components/AIStack.astro';
+import Experience from '../components/Experience.astro';
+import CaseStudies from '../components/CaseStudies.astro';
+import WritingSamples from '../components/WritingSamples.astro';
+import SkillsGrid from '../components/SkillsGrid.astro';
+import Education from '../components/Education.astro';
+import Contact from '../components/Contact.astro';
+import PostCard from '../components/PostCard.astro';
+import resume from '../data/resume.json';
+
+const { basics } = resume;
+
+const posts = (await getCollection('blog', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .slice(0, 3);
+
+/** Structured data so search engines and LLM crawlers can read the resume. */
+const personSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: basics.name,
+  jobTitle: basics.title,
+  description: basics.tagline,
+  url: Astro.site?.toString(),
+  ...(basics.location && { address: { '@type': 'PostalAddress', addressLocality: basics.location } }),
+  ...(basics.email && { email: `mailto:${basics.email}` }),
+  ...(basics.linkedin && { sameAs: [basics.linkedin, basics.github].filter(Boolean) }),
+  ...(basics.availableForWork && {
+    jobSeeker: {
+      '@type': 'Demand',
+      occupationalCategory: 'technical writing',
+      skills: resume.skills.flatMap((g) => g.items),
+    },
+  }),
+};
+---
+
+<Base page="home">
+  <Header slot="header" />
+  <Footer slot="footer" />
+
+  <script type="application/ld+json" set:html={JSON.stringify(personSchema)} />
+
+  {/* ---------------------------------------------------------------- Hero */}
+  <section class="hero">
+    <div class="wrap">
+      <h1>{basics.name}</h1>
+      <p class="role">{basics.title}</p>
+
+      {
+        basics.availableForWork && basics.availabilityNote && (
+          <p class="status">
+            <span class="dot" aria-hidden="true" />
+            {basics.availabilityNote}
+          </p>
+        )
+      }
+
+      <p class="lede">{basics.summary}</p>
+
+      <p class="hero-ctas no-print">
+        {
+          basics.linkedin && (
+            <a
+              class="btn btn-primary"
+              href={basics.linkedin}
+              rel="noopener"
+              target="_blank"
+            >
+              Connect on LinkedIn <span aria-hidden="true">↗</span>
+            </a>
+          )
+        }
+        {
+          basics.email && (
+            <a class="btn" href={`mailto:${basics.email}`}>
+              {basics.email}
+            </a>
+          )
+        }
+        <a class="btn" href="/writing/">
+          Read the blog <span aria-hidden="true">→</span>
+        </a>
+      </p>
+    </div>
+  </section>
+
+  {/* ---------------------------------------------------------- AI stack */}
+  <Section
+    id="ai-stack"
+    title={resume.aiStack.heading}
+    eyebrow={resume.aiStack.eyebrow}
+  >
+    <AIStack />
+  </Section>
+
+  {/* -------------------------------------------------------- Experience */}
+  <Section id="experience" title="Experience" eyebrow="Where I've worked">
+    <Experience />
+  </Section>
+
+  {/* ------------------------------------------------------- Case studies */}
+  <Section id="case-studies" title="Case studies" eyebrow="Selected work">
+    <CaseStudies />
+  </Section>
+
+  {/* -------------------------------------------------- Writing samples */}
+  <Section
+    id="samples"
+    title="Selected writing"
+    eyebrow="Portfolio"
+    action={{ label: 'All writing', href: '/writing/' }}
+  >
+    <WritingSamples />
+  </Section>
+
+  {/* ------------------------------------------------------------ Skills */}
+  <Section id="skills" title="Skills & tools" eyebrow="What I work with">
+    <SkillsGrid />
+  </Section>
+
+  {/* -------------------------------------------------- Recent writing */}
+  {
+    posts.length > 0 && (
+      <Section
+        id="writing"
+        title="Recent writing"
+        eyebrow="Blog"
+        action={{ label: 'View all posts', href: '/writing/' }}
+      >
+        <ul class="post-grid">
+          {posts.map((post) => (
+            <li>
+              <PostCard post={post} />
+            </li>
+          ))}
+        </ul>
+      </Section>
+    )
+  }
+
+  {/* -------------------------------------------------------- Education */}
+  <Section id="education" title="Education" eyebrow="Credentials">
+    <Education />
+  </Section>
+
+  {/* ---------------------------------------------------------- Contact */}
+  <Section id="contact" title="Contact" eyebrow="Get in touch">
+    <Contact />
+  </Section>
+</Base>
+
+<style>
+  .hero {
+    padding-block: var(--space-2xl) var(--space-xl);
+  }
+
+  h1 {
+    font-size: var(--step-4);
+    line-height: 1.05;
+  }
+
+  .role {
+    font-size: var(--step-2);
+    font-family: var(--font-serif);
+    color: var(--ink-muted);
+    margin-block-start: var(--space-2xs);
+  }
+
+  .status {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2xs);
+    margin-block-start: var(--space-s);
+    padding: 0.2rem 0.65rem;
+    border: var(--border) var(--line);
+    border-radius: 100px;
+    background: var(--accent-wash);
+    color: var(--accent-ink);
+    font-size: 0.8rem;
+  }
+
+  .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+
+  .lede {
+    margin-block-start: var(--space-m);
+    max-width: 54ch;
+  }
+
+  .hero-ctas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2xs);
+    margin-block-start: var(--space-l);
+  }
+
+  .post-grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+    gap: var(--space-m) var(--space-l);
+  }
+</style>

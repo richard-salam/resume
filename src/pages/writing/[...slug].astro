@@ -1,0 +1,298 @@
+---
+import { getCollection, render } from 'astro:content';
+import type { GetStaticPaths } from 'astro';
+import Base from '../../layouts/Base.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import PostCard from '../../components/PostCard.astro';
+import { formatDate } from '../../lib/format';
+import resume from '../../data/resume.json';
+
+export const getStaticPaths = (async () => {
+  const posts = await getCollection('blog', ({ data }) => !data.draft);
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+}) satisfies GetStaticPaths;
+
+const { post } = Astro.props;
+const { Content, headings } = await render(post);
+
+const { title, description, pubDate, updatedDate, tags } = post.data;
+
+/** Previous / next by publish date, newest first. */
+const all = (await getCollection('blog', ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+);
+const index = all.findIndex((p) => p.id === post.id);
+const newer = index > 0 ? all[index - 1] : undefined;
+const older = index < all.length - 1 ? all[index + 1] : undefined;
+
+const toc = headings.filter((h) => h.depth === 2);
+---
+
+<Base page="post" title={title} description={description}>
+  <Header slot="header" />
+  <Footer slot="footer" />
+
+  <article>
+    <header class="post-head">
+      <div class="wrap">
+        <p class="crumbs no-print">
+          <a href="/writing/">Writing</a>
+          <span aria-hidden="true">/</span>
+        </p>
+
+        <h1>{title}</h1>
+        <p class="lede">{description}</p>
+
+        <p class="meta">
+          <time datetime={pubDate.toISOString()}>{formatDate(pubDate)}</time>
+          {
+            updatedDate && (
+              <span class="updated">
+                Updated <time datetime={updatedDate.toISOString()}>
+                  {formatDate(updatedDate)}
+                </time>
+              </span>
+            )
+          }
+          <span class="byline">by {resume.basics.name}</span>
+        </p>
+
+        {
+          tags.length > 0 && (
+            <ul class="tag-row no-print">
+              {tags.map((t) => (
+                <li class="tag">{t}</li>
+              ))}
+            </ul>
+          )
+        }
+      </div>
+    </header>
+
+    <div class="wrap body">
+      {
+        toc.length > 2 && (
+          <nav class="toc no-print" aria-labelledby="toc-heading">
+            <p class="eyebrow" id="toc-heading">
+              On this page
+            </p>
+            <ul>
+              {toc.map((h) => (
+                <li>
+                  <a href={`#${h.slug}`}>{h.text}</a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        )
+      }
+
+      <div class="prose">
+        <Content />
+      </div>
+    </div>
+
+    <footer class="wrap post-foot">
+      {
+        (newer || older) && (
+          <nav class="adjacent" aria-label="More posts">
+            {newer && (
+              <a class="adj prev" href={`/writing/${newer.id}/`}>
+                <span class="dir">← Newer</span>
+                <span class="t">{newer.data.title}</span>
+              </a>
+            )}
+            {older && (
+              <a class="adj next" href={`/writing/${older.id}/`}>
+                <span class="dir">Older →</span>
+                <span class="t">{older.data.title}</span>
+              </a>
+            )}
+          </nav>
+        )
+      }
+
+      <div class="more no-print">
+        <p class="eyebrow">Keep reading</p>
+        <ul>
+          {
+            all
+              .filter((p) => p.id !== post.id)
+              .slice(0, 3)
+              .map((p) => (
+                <li>
+                  <PostCard post={p} compact />
+                </li>
+              ))
+          }
+        </ul>
+        <p class="back">
+          <a href="/writing/">All posts →</a>
+        </p>
+      </div>
+    </footer>
+  </article>
+</Base>
+
+<style>
+  .post-head {
+    padding-block: var(--space-2xl) var(--space-l);
+    border-bottom: var(--border) var(--line);
+  }
+
+  .crumbs {
+    display: flex;
+    gap: var(--space-2xs);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--ink-faint);
+  }
+
+  .crumbs a {
+    color: var(--ink-faint);
+    text-decoration: none;
+  }
+
+  .crumbs a:hover {
+    color: var(--accent);
+  }
+
+  h1 {
+    font-size: var(--step-4);
+    line-height: 1.08;
+    margin-block-start: var(--space-2xs);
+    max-width: 20ch;
+  }
+
+  .post-head .lede {
+    margin-block-start: var(--space-m);
+  }
+
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2xs) var(--space-s);
+    margin-block-start: var(--space-m);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--ink-faint);
+  }
+
+  .updated::before {
+    content: '·';
+    margin-inline-end: var(--space-2xs);
+  }
+
+  .post-head .tag-row {
+    margin-block-start: var(--space-s);
+  }
+
+  .body {
+    padding-block: var(--space-l);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-l);
+  }
+
+  .body:has(.toc) {
+    grid-template-columns: 14rem minmax(0, 1fr);
+  }
+
+  .toc {
+    position: sticky;
+    top: calc(3.25rem + var(--space-m));
+    align-self: start;
+    font-size: 0.8rem;
+  }
+
+  .toc ul {
+    list-style: none;
+    margin: var(--space-2xs) 0 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+
+  .toc a {
+    color: var(--ink-muted);
+    text-decoration: none;
+  }
+
+  .toc a:hover {
+    color: var(--accent);
+  }
+
+  .post-foot {
+    padding-block-end: var(--space-xl);
+  }
+
+  .adjacent {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+    gap: var(--space-m);
+    padding-block: var(--space-l);
+    border-top: var(--border) var(--line);
+  }
+
+  .adj {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    text-decoration: none;
+    color: var(--ink);
+  }
+
+  .adj.next {
+    text-align: end;
+  }
+
+  .adj .dir {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--ink-faint);
+  }
+
+  .adj .t {
+    color: var(--accent-ink);
+  }
+
+  .adj:hover .t {
+    text-decoration: underline;
+  }
+
+  .more {
+    margin-block-start: var(--space-l);
+  }
+
+  .more ul {
+    list-style: none;
+    margin: var(--space-s) 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-s);
+  }
+
+  .more > li + li,
+  .more ul > li + li {
+    border-top: var(--border) var(--line);
+    padding-block-start: var(--space-s);
+  }
+
+  .back {
+    font-size: var(--step--1);
+  }
+
+  @media (max-width: 60rem) {
+    .body:has(.toc) {
+      grid-template-columns: 1fr;
+    }
+    .toc {
+      position: static;
+      padding-block-end: var(--space-m);
+      border-bottom: var(--border) var(--line);
+    }
+  }
+</style>

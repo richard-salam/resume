@@ -1,0 +1,169 @@
+{
+  "$comment": "Single source of truth for the resume. Every section on the home page renders from here. Update this file, commit, and the site rebuilds. Fields marked TODO are placeholders.",
+
+  "basics": {
+    "name": "Richard Salam",
+    "title": "Senior Technical Writer",
+    "tagline": "TODO One line that says what you do and who you do it for. Under 12 words.",
+    "summary": "TODO Two or three sentences. Lead with your specialism, then the kind of company or team you do your best work in, then one concrete proof point. Recruiters read the first line and decide whether to keep going, so make that line count.",
+    "location": "TODO City, Country",
+    "email": "",
+    "linkedin": "TODO https://www.linkedin.com/in/your-handle/",
+    "github": "https://github.com/richard-salam",
+    "x": "",
+    "bluesky": "",
+    "availableForWork": true,
+    "availabilityNote": "Open to new work"
+  },
+
+  "aiStack": {
+    "eyebrow": "Currently building",
+    "heading": "TODO Name of the AI stack you're building",
+    "description": "TODO Two or three sentences on what it is, what problem it solves, and where it is in its lifecycle. Write it so a reader understands why docs-as-code and AI belong in the same sentence.",
+    "pillars": [
+      {
+        "title": "TODO Pillar one",
+        "description": "TODO One or two sentences on this capability."
+      },
+      {
+        "title": "TODO Pillar two",
+        "description": "TODO One or two sentences on this capability."
+      },
+      {
+        "title": "TODO Pillar three",
+        "description": "TODO One or two sentences on this capability."
+      }
+    ],
+    "links": [
+      { "label": "TODO View the repository", "href": "https://github.com/TODO" }
+    ],
+    "repo": "https://github.com/TODO"
+  },
+
+  "experience": [
+    {
+      "company": "TODO Current company",
+      "title": "Senior Technical Writer",
+      "location": "TODO City, Remote",
+      "start": "2023-04",
+      "end": "present",
+      "summary": "TODO One sentence framing the scope of your remit at this company.",
+      "highlights": [
+        "TODO Outcome-first bullet. Lead with a verb, then the action, then a number if you have one. Example shape: \"Rebuilt the onboarding guide as docs-as-code, cutting time-to-first-success for new users from 3 days to 4 hours.\"",
+        "TODO Second bullet. Prefer evidence over activity: what changed for users, the business, or the team because of your work.",
+        "TODO Third bullet."
+      ],
+      "stack": ["TODO tool", "TODO tool", "TODO tool"]
+    },
+    {
+      "company": "TODO Previous company",
+      "title": "Technical Writer",
+      "location": "TODO City, Remote",
+      "start": "2020-01",
+      "end": "2023-03",
+      "summary": "TODO One sentence framing the scope of your remit here.",
+      "highlights": [
+        "TODO Outcome-first bullet with a metric.",
+        "TODO Second bullet.",
+        "TODO Third bullet."
+      ],
+      "stack": ["TODO tool", "TODO tool"]
+    },
+    {
+      "company": "TODO Earlier company or agency",
+      "title": "TODO Your title here",
+      "location": "TODO City, Remote",
+      "start": "2017-06",
+      "end": "2019-12",
+      "summary": "TODO One sentence framing the scope of your remit here.",
+      "highlights": [
+        "TODO Outcome-first bullet with a metric.",
+        "TODO Second bullet."
+      ],
+      "stack": ["TODO tool"]
+    }
+  ],
+
+  "caseStudies": [
+    {
+      "title": "TODO Case study title that implies the outcome, not the topic",
+      "problem": "TODO What was broken, and who was hurting because of it.",
+      "role": "TODO What you specifically owned.",
+      "approach": "TODO What you actually did. Two or three sentences.",
+      "result": "TODO What changed, with a number if you have one.",
+      "tags": ["TODO tag", "TODO tag"],
+      "href": ""
+    },
+    {
+      "title": "TODO Second case study",
+      "problem": "TODO The problem.",
+      "role": "TODO Your role.",
+      "approach": "TODO The approach.",
+      "result": "TODO The result.",
+      "tags": ["TODO tag", "TODO tag"],
+      "href": ""
+    }
+  ],
+
+  "writingSamples": [
+    {
+      "title": "TODO Title of a piece you're proud of",
+      "description": "TODO Why this one. What it demonstrates about how you write.",
+      "publication": "TODO Where it was published or what product it lives in",
+      "year": "2024",
+      "url": "https://example.com"
+    },
+    {
+      "title": "TODO Second writing sample",
+      "description": "TODO Why this one.",
+      "publication": "TODO Publication or product",
+      "year": "2023",
+      "url": "https://example.com"
+    },
+    {
+      "title": "TODO Third writing sample",
+      "description": "TODO Why this one.",
+      "publication": "TODO Publication or product",
+      "year": "2022",
+      "url": "https://example.com"
+    }
+  ],
+
+  "skills": [
+    {
+      "category": "Docs as code",
+      "items": ["TODO e.g. Git", "TODO e.g. GitHub Actions", "TODO e.g. Markdown", "TODO e.g. MDX", "TODO e.g. Vale"]
+    },
+    {
+      "category": "Static site & publishing",
+      "items": ["TODO e.g. Astro", "TODO e.g. Docusaurus", "TODO e.g. MkDocs", "TODO e.g. GitHub Pages"]
+    },
+    {
+      "category": "AI-assisted authoring",
+      "items": ["TODO e.g. LLM prompting", "TODO e.g. RAG pipelines", "TODO e.g. evals", "TODO e.g. human-in-the-loop review"]
+    },
+    {
+      "category": "Content design",
+      "items": ["TODO e.g. information architecture", "TODO e.g. content style guides", "TODO e.g. user research", "TODO e.g. task-based writing"]
+    },
+    {
+      "category": "Tooling",
+      "items": ["TODO e.g. GitHub", "TODO e.g. GitLab", "TODO e.g. Jira", "TODO e.g. Figma", "TODO e.g. Analytics"]
+    }
+  ],
+
+  "education": [
+    {
+      "degree": "TODO Degree, e.g. BA English Literature",
+      "institution": "TODO Institution",
+      "year": "2016",
+      "detail": "TODO Optional line: honours, thesis, relevant coursework."
+    },
+    {
+      "degree": "TODO Certification or course",
+      "institution": "TODO Provider",
+      "year": "2023",
+      "detail": "TODO Optional note."
+    }
+  ]
+}

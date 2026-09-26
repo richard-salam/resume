@@ -1,0 +1,106 @@
+---
+import resume from '../data/resume.json';
+
+const { basics } = resume;
+
+// LinkedIn is the primary CTA, per the contact preference.
+const primary = basics.linkedin
+  ? { label: 'Connect on LinkedIn', href: basics.linkedin }
+  : basics.email
+    ? { label: 'Email me', href: `mailto:${basics.email}` }
+    : null;
+
+const secondary = [
+  basics.email && { label: basics.email, href: `mailto:${basics.email}`, icon: '@' },
+  basics.github && { label: 'GitHub', href: basics.github, icon: 'GH' },
+  basics.x && { label: 'X', href: basics.x, icon: 'X' },
+  basics.bluesky && { label: 'Bluesky', href: basics.bluesky, icon: 'BS' },
+  { label: 'RSS', href: '/rss.xml', icon: 'RSS' },
+].filter((s): s is { label: string; href: string; icon: string } => Boolean(s));
+---
+
+<div class="inner">
+  <p class="lede">
+    {
+      basics.availableForWork && basics.availabilityNote
+        ? `${basics.availabilityNote}. `
+        : ''
+    }
+    The fastest way to reach me is LinkedIn — I read every message.
+  </p>
+
+  {
+    primary && (
+      <p class="ctas">
+        <a
+          class="btn btn-primary"
+          href={primary.href}
+          rel="noopener"
+          target="_blank"
+        >
+          {primary.label} <span aria-hidden="true">↗</span>
+        </a>
+      </p>
+    )
+  }
+
+  <ul class="links">
+    {
+      secondary.map((s) => (
+        <li>
+          <a href={s.href} rel="me noopener">
+            <span class="icon" aria-hidden="true">
+              {s.icon}
+            </span>
+            {s.label}
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</div>
+
+<style>
+  .lede {
+    max-width: 44ch;
+  }
+
+  .ctas {
+    margin-block: var(--space-m) var(--space-m);
+  }
+
+  .links {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2xs) var(--space-m);
+  }
+
+  .links a {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2xs);
+    font-size: var(--step--1);
+    text-decoration: none;
+    color: var(--ink-muted);
+  }
+
+  .links a:hover {
+    color: var(--accent);
+  }
+
+  .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2.1rem;
+    padding: 0.15rem 0.4rem;
+    border: var(--border) var(--line);
+    border-radius: var(--radius);
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    color: var(--ink-faint);
+  }
+</style>

@@ -1,0 +1,63 @@
+---
+import resume from '../data/resume.json';
+
+const items = resume.education;
+---
+
+<ul class="list">
+  {
+    items.map((item) => (
+      <li>
+        <div class="what">
+          <h3>{item.degree}</h3>
+          <p class="muted">{item.institution}</p>
+          {item.detail && <p class="detail muted">{item.detail}</p>}
+        </div>
+        <p class="year">{item.year}</p>
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  li {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-m);
+    padding-block: var(--space-s);
+    border-top: var(--border) var(--line);
+  }
+
+  li:first-child {
+    border-top: 0;
+    padding-block-start: 0;
+  }
+
+  h3 {
+    font-size: var(--step-0);
+    font-weight: 600;
+  }
+
+  .muted {
+    font-size: var(--step--1);
+  }
+
+  .detail {
+    margin-block-start: 0.15rem;
+    color: var(--ink-faint);
+  }
+
+  .year {
+    flex-shrink: 0;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--ink-faint);
+  }
+</style>
