@@ -28,7 +28,9 @@ const personSchema = {
   name: basics.name,
   jobTitle: basics.title,
   description: basics.tagline,
-  url: Astro.site?.toString(),
+  // Astro.site is the domain root and omits `base`; resolve against the current
+  // pathname so the declared identity URL is the real page URL, not the domain.
+  url: new URL(Astro.url.pathname, Astro.site).toString(),
   ...(basics.location && { address: { '@type': 'PostalAddress', addressLocality: basics.location } }),
   ...(basics.email && { email: `mailto:${basics.email}` }),
   ...(basics.linkedin && { sameAs: [basics.linkedin, basics.github].filter(Boolean) }),
