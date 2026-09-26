@@ -7,6 +7,7 @@ import Footer from '../../components/Footer.astro';
 import PostCard from '../../components/PostCard.astro';
 import { formatDate } from '../../lib/format';
 import resume from '../../data/resume.json';
+import { withBase } from '../../lib/paths';
 
 export const getStaticPaths = (async () => {
   const posts = await getCollection('blog', ({ data }) => !data.draft);
@@ -37,7 +38,7 @@ const toc = headings.filter((h) => h.depth === 2);
     <header class="post-head">
       <div class="wrap">
         <p class="crumbs no-print">
-          <a href="/writing/">Writing</a>
+          <a href={withBase('/writing/')}>Writing</a>
           <span aria-hidden="true">/</span>
         </p>
 
@@ -98,13 +99,13 @@ const toc = headings.filter((h) => h.depth === 2);
         (newer || older) && (
           <nav class="adjacent" aria-label="More posts">
             {newer && (
-              <a class="adj prev" href={`/writing/${newer.id}/`}>
+              <a class="adj prev" href={withBase(`/writing/${newer.id}/`)}>
                 <span class="dir">← Newer</span>
                 <span class="t">{newer.data.title}</span>
               </a>
             )}
             {older && (
-              <a class="adj next" href={`/writing/${older.id}/`}>
+              <a class="adj next" href={withBase(`/writing/${older.id}/`)}>
                 <span class="dir">Older →</span>
                 <span class="t">{older.data.title}</span>
               </a>
@@ -128,7 +129,7 @@ const toc = headings.filter((h) => h.depth === 2);
           }
         </ul>
         <p class="back">
-          <a href="/writing/">All posts →</a>
+          <a href={withBase('/writing/')}>All posts →</a>
         </p>
       </div>
     </footer>

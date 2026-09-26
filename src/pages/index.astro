@@ -13,6 +13,7 @@ import Education from '../components/Education.astro';
 import Contact from '../components/Contact.astro';
 import PostCard from '../components/PostCard.astro';
 import resume from '../data/resume.json';
+import { withBase } from '../lib/paths';
 
 const { basics } = resume;
 
@@ -84,7 +85,7 @@ const personSchema = {
             </a>
           )
         }
-        <a class="btn" href="/writing/">
+        <a class="btn" href={withBase('/writing/')}>
           Read the blog <span aria-hidden="true">→</span>
         </a>
       </p>

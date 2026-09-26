@@ -1,6 +1,7 @@
 ---
 import '../styles/global.css';
 import resume from '../data/resume.json';
+import { withBase } from '../lib/paths';
 
 interface Props {
   title?: string;
@@ -30,9 +31,9 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <title>{siteTitle}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="alternate" type="application/rss+xml" title={`${resume.basics.name} — Writing`} href="/rss.xml" />
-    <link rel="sitemap" href="/sitemap-index.xml" />
+    <link rel="icon" type="image/svg+xml" href={withBase('/favicon.svg')} />
+    <link rel="alternate" type="application/rss+xml" title={`${resume.basics.name} — Writing`} href={withBase('/rss.xml')} />
+    <link rel="sitemap" href={withBase('/sitemap-index.xml')} />
 
     <meta property="og:type" content="website" />
     <meta property="og:title" content={siteTitle} />

@@ -2,6 +2,7 @@
 import Base from '../layouts/Base.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import { withBase } from '../lib/paths';
 ---
 
 <Base page="404" title="Page not found" description="That page does not exist.">
@@ -15,8 +16,8 @@ import Footer from '../components/Footer.astro';
       That URL doesn't exist. It may have moved, or the link may be wrong.
     </p>
     <p>
-      <a class="btn" href="/">Back to the resume</a>
-      <a class="btn" href="/writing/">Read the blog</a>
+      <a class="btn" href={withBase('/')}>Back to the resume</a>
+      <a class="btn" href={withBase('/writing/')}>Read the blog</a>
     </p>
   </section>
 </Base>

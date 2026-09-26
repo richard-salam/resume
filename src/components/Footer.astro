@@ -1,5 +1,6 @@
 ---
 import resume from '../data/resume.json';
+import { withBase } from '../lib/paths';
 
 const { basics } = resume;
 const year = new Date().getFullYear();
@@ -31,7 +32,7 @@ const socials = [
             </li>
           ))}
           <li>
-            <a href="/rss.xml">RSS</a>
+            <a href={withBase('/rss.xml')}>RSS</a>
           </li>
         </ul>
       )

@@ -32,7 +32,7 @@ terminal inherited a stale `PATH`. Run `nvm use <version>` or open a new one.
 
 ```bash
 npm install
-npm run dev          # http://localhost:4321
+npm run dev          # http://localhost:4321/resume/
 ```
 
 | Command           | Does                                              |
@@ -41,6 +41,34 @@ npm run dev          # http://localhost:4321
 | `npm run build`   | Production build into `dist/`                     |
 | `npm run preview` | Serve the built `dist/` locally                   |
 | `npm run check`   | Type-check `.astro` and `.ts` files (runs in CI)  |
+
+### The `/resume/` subpath
+
+This repo is named `resume`, not `richard-salam.github.io`, so GitHub Pages
+serves it from a **subpath**: `https://richard-salam.github.io/resume/`.
+
+That is handled by two settings in `astro.config.mjs`:
+
+```js
+site: 'https://richard-salam.github.io',  // domain root
+base: '/resume',                          // Pages subpath
+```
+
+Astro does **not** rewrite hand-written hrefs, so a bare `href="/writing/"`
+would 404. Every internal link goes through `withBase()` from
+`src/lib/paths.ts`:
+
+```astro
+---
+import { withBase } from '../lib/paths';
+---
+<a href={withBase('/writing/')}>Writing</a>
+```
+
+If you ever rename the repo, update `base` in `astro.config.mjs` and the
+`Sitemap:` line in `public/robots.txt`. If you switch to a user site
+(repo named `richard-salam.github.io`), set `base: '/'` and `withBase()`
+becomes a no-op.
 
 ---
 
@@ -96,52 +124,35 @@ something real.
 
 ## Deploying to GitHub Pages
 
-### 1. Create the repo
+This project is already wired to `git@github.com:richard-salam/resume.git` on
+branch `main`. The `deploy.yml` workflow type-checks, builds, and publishes on
+every push.
+
+### First-time setup
+
+1. **Enable Pages** — repo → **Settings** → **Pages** → **Build and
+   deployment** → **Source**: **GitHub Actions**.
+   (Doing this *before* the first push avoids a failed workflow run.)
+2. **Push** — the first push to `main` triggers the deploy automatically.
+3. Watch it under the **Actions** tab, then visit
+   <https://richard-salam.github.io/resume/>.
+
+### Pushing later
 
 ```bash
-cd /path/to/this/project
-git init
 git add -A
-git commit -m "Initial commit"
-gh repo create <your-username>.github.io --public --source=. --push
+git commit -m "Update experience at Acme"
+git push
 ```
-
-Use `<your-username>.github.io` as the repo name if you want
-`https://<your-username>.github.io/`. Any other repo name gives you
-`https://<your-username>.github.io/<repo-name>/`.
-
-No `gh`? Create an empty repo on github.com, then:
-
-```bash
-git remote add origin git@github.com:<you>/<repo>.git
-git push -u origin main
-```
-
-### 2. Set the site URL
-
-Update `site` in `astro.config.mjs` **and** the `Sitemap:` line in
-`public/robots.txt` to match your final URL. Canonical tags, the sitemap, and
-the RSS feed all derive from this value.
-
-```js
-site: 'https://<your-username>.github.io',
-```
-
-### 3. Turn on Pages
-
-Repo → **Settings** → **Pages** → **Build and deployment** → **Source**:
-**GitHub Actions**.
-
-The workflow at `.github/workflows/deploy.yml` type-checks, builds, and
-publishes on every push to `main`. Watch the first run under the **Actions** tab.
 
 ### Adding a custom domain later
 
 1. Add a `public/CNAME` file containing just your domain.
-2. Point a CNAME record at `<your-username>.github.io`.
+2. Point a CNAME record at `richard-salam.github.io`.
 3. In **Settings** → **Pages**, set the custom domain and wait for the
    TLS certificate to issue.
-4. Update `site` in `astro.config.mjs` and redeploy.
+4. Set `site` in `astro.config.mjs` to your domain and set `base: '/'`, then
+   redeploy.
 
 Enforce HTTPS once the certificate is live.
 
@@ -198,6 +209,7 @@ src/
   data/resume.json             ← the resume
   layouts/Base.astro           HTML shell, meta, theme init
   lib/format.ts                Date and duration formatting
+  lib/paths.ts                 withBase() for the /resume subpath
   pages/                       Routes
   styles/global.css            Design tokens, base styles, print styles
 ```

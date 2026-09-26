@@ -1,9 +1,9 @@
 ---
 import ThemeToggle from './ThemeToggle.astro';
 import resume from '../data/resume.json';
+import { withBase } from '../lib/paths';
 
 const { basics } = resume;
-const path = Astro.url.pathname;
 
 /** Anchor nav on the home page, plus the Writing index. */
 const nav = [
@@ -13,15 +13,17 @@ const nav = [
   { href: '/#contact', label: 'Contact' },
 ];
 
+const writingHref = withBase('/writing/');
+
 function isActive(href: string) {
-  if (href === '/writing/') return path.startsWith('/writing');
+  if (href === writingHref) return Astro.url.pathname.startsWith(writingHref);
   return false;
 }
 ---
 
 <header class="site-header no-print">
   <div class="wrap bar">
-    <a class="brand" href="/">
+    <a class="brand" href={withBase('/')}>
       <span class="brand-name">{basics.name}</span>
     </a>
 
@@ -31,7 +33,7 @@ function isActive(href: string) {
           nav.map((item) => (
             <li>
               <a
-                href={item.href}
+                href={withBase(item.href)}
                 aria-current={isActive(item.href) ? 'page' : undefined}
               >
                 {item.label}
@@ -40,7 +42,7 @@ function isActive(href: string) {
           ))
         }
         <li>
-          <a href="/writing/" aria-current={isActive('/writing/') ? 'page' : undefined}>
+          <a href={writingHref} aria-current={isActive('/writing/') ? 'page' : undefined}>
             Blog
           </a>
         </li>

@@ -1,6 +1,7 @@
 ---
 import type { CollectionEntry } from 'astro:content';
 import { formatDate } from '../lib/format';
+import { withBase } from '../lib/paths';
 
 interface Props {
   post: CollectionEntry<'blog'>;
@@ -11,7 +12,7 @@ interface Props {
 
 const { post, compact = false, featured = false } = Astro.props;
 const { title, description, pubDate, tags } = post.data;
-const href = `/writing/${post.id}/`;
+const href = withBase(`/writing/${post.id}/`);
 ---
 
 <article class:list={['card', { compact, featured }]}>

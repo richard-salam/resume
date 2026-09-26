@@ -1,5 +1,6 @@
 ---
 import resume from '../data/resume.json';
+import { withBase } from '../lib/paths';
 
 const { basics } = resume;
 
@@ -15,7 +16,7 @@ const secondary = [
   basics.github && { label: 'GitHub', href: basics.github, icon: 'GH' },
   basics.x && { label: 'X', href: basics.x, icon: 'X' },
   basics.bluesky && { label: 'Bluesky', href: basics.bluesky, icon: 'BS' },
-  { label: 'RSS', href: '/rss.xml', icon: 'RSS' },
+  { label: 'RSS', href: withBase('/rss.xml'), icon: 'RSS' },
 ].filter((s): s is { label: string; href: string; icon: string } => Boolean(s));
 ---
 
